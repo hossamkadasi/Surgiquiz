@@ -75,6 +75,22 @@
       }
     };
 
+    function resetDraft(){
+      lastDraft='';
+      el('copy').disabled=true;
+      el('copy').textContent='Copy draft';
+      el('output').textContent='';
+      el('outputWrap').style.display='none';
+    }
+
+    function invalidatePack(message='Changes require validation before generation.'){
+      validatedPack=null;
+      el('generate').disabled=true;
+      resetDraft();
+      el('preview').innerHTML='<div class="notice">No validated pack yet.</div>';
+      el('status').innerHTML=message ? `<div class="notice warning">${escapeHtml(message)}</div>` : '';
+    }
+
     function fail(message){ throw new Error(message); }
     function clean(value, label, max){
       if(typeof value !== 'string') fail(label + ' must be a string.');
@@ -128,8 +144,15 @@
       el('preview').innerHTML = `<div class="notice">Validated: de-identified=true · reviewedByUser=true · required exclusions present</div>${rows}<h4>Learning objectives</h4>${objectives}`;
     }
 
-    el('example').onclick = () => { el('pack').value = JSON.stringify(safeExample,null,2); el('status').innerHTML=''; validatedPack=null; el('generate').disabled=true; };
+    el('pack').addEventListener('input', () => invalidatePack());
+
+    el('example').onclick = () => {
+      el('pack').value = JSON.stringify(safeExample,null,2);
+      invalidatePack('Safe example loaded. Validate it before generation.');
+    };
+
     el('validate').onclick = () => {
+      resetDraft();
       try{
         const parsed = JSON.parse(el('pack').value || '{}');
         validatedPack = validatePack(parsed);
@@ -137,24 +160,31 @@
         el('status').innerHTML = '<div class="notice">Pack accepted locally. It has not been sent anywhere.</div>';
         el('generate').disabled = false;
       }catch(error){
-        validatedPack=null; el('generate').disabled=true; el('preview').innerHTML='<div class="notice error">Validation failed.</div>';
+        validatedPack=null;
+        el('generate').disabled=true;
+        el('preview').innerHTML='<div class="notice error">Validation failed.</div>';
         el('status').innerHTML = `<div class="notice error">${escapeHtml(error.message || String(error))}</div>`;
       }
     };
 
     el('generate').onclick = async () => {
       if(!validatedPack) return;
+      const generationPack = validatedPack;
       el('generate').disabled=true;
+      resetDraft();
       el('outputWrap').style.display='block';
       el('output').textContent='Generating reviewed learning draft…';
       try{
-        const response = await fetch('/.netlify/functions/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:'case_to_quiz',payload:{learningCase:validatedPack},lang:'en'})});
+        const response = await fetch('/.netlify/functions/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:'learning_bridge',payload:{learningCase:generationPack},lang:'en'})});
         const data = await response.json();
         if(!response.ok) throw new Error(data.error || 'AI service unavailable');
-        lastDraft = data.content || localDraft(validatedPack);
+        if(validatedPack !== generationPack) return;
+        lastDraft = data.content || localDraft(generationPack);
       }catch{
-        lastDraft = localDraft(validatedPack);
+        if(validatedPack !== generationPack) return;
+        lastDraft = localDraft(generationPack);
       }
+      if(validatedPack !== generationPack) return;
       el('output').textContent=lastDraft;
       el('copy').disabled=false;
       el('generate').disabled=false;
@@ -166,6 +196,7 @@
     };
 
     el('pack').value = JSON.stringify(safeExample,null,2);
+    invalidatePack('Safe example loaded. Validate it before generation.');
   </script>
 </body>
 </html>
