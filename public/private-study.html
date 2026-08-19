@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SurgiQuiz Private Study</title>
+  <style>
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#15202b;background:#f5f7fa}
+    *{box-sizing:border-box}body{margin:0}.wrap{max-width:1120px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}.brand h1{margin:0;font-size:28px}.brand p{margin:4px 0 0;color:#5c6773}.card{background:white;border:1px solid #dce2e8;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.04)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat b{display:block;font-size:24px}.stat span{color:#637083;font-size:13px}.stack{display:grid;gap:14px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn,.select,.input{border:1px solid #cfd7df;background:white;border-radius:10px;padding:10px 12px;font:inherit}.btn{cursor:pointer}.btn.primary{background:#11263d;color:white;border-color:#11263d}.btn:disabled{opacity:.5;cursor:not-allowed}.select{min-width:180px}.input{flex:1;min-width:220px}.notice{padding:12px;border-radius:10px;background:#f1f5f9;color:#44505e;font-size:14px}.ok{background:#edf8f0}.warn{background:#fff6e6}.error{background:#fff0f0}.hidden{display:none}.question-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.meta{font-size:12px;color:#687586;line-height:1.6}.question{font-size:20px;line-height:1.5;margin:14px 0}.options{display:grid;gap:10px}.option{display:flex;gap:10px;align-items:flex-start;border:1px solid #d6dde5;border-radius:12px;padding:12px;cursor:pointer}.option input{margin-top:3px}.option.correct{border-color:#2c7a4b;background:#edf8f0}.option.wrong{border-color:#b94b4b;background:#fff0f0}.explanation{margin-top:14px;padding:14px;border-radius:12px;background:#f6f8fb;line-height:1.55}.footer{color:#6d7884;font-size:12px;text-align:center;margin:18px 0}.progress{height:8px;background:#e7ebef;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:#11263d}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}.spacer{height:6px}
+    @media (max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.top{align-items:flex-start;flex-direction:column}.question-head{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand"><h1>SurgiQuiz Private Study</h1><p>Local question-bank review. Your selected file stays in this browser session.</p></div>
+      <a class="btn" href="/">Back to Beta</a>
+    </header>
+
+    <section class="card stack" id="loaderCard">
+      <div><b>1. Load private bank</b></div>
+      <div class="notice">Select <span class="mono">SurgiQuiz_Private_Study_Bank_Final_v4.json</span> or its <span class="mono">.json.gz</span> version. The page reads the file locally; it is not uploaded by this page.</div>
+      <div class="row"><input id="file" class="input" type="file" accept=".json,.gz,.json.gz,application/json,application/gzip" /><button id="clear" class="btn" type="button">Clear</button></div>
+      <div id="loadStatus" class="notice hidden"></div>
+    </section>
+
+    <div class="spacer"></div>
+    <section id="bankArea" class="stack hidden">
+      <section class="grid">
+        <div class="card stat"><b id="sTotal">0</b><span>Total questions</span></div>
+        <div class="card stat"><b id="sReady">0</b><span>Single-answer ready</span></div>
+        <div class="card stat"><b id="sComplex">0</b><span>Complex-format</span></div>
+        <div class="card stat"><b id="sAnom">0</b><span>Source-answer anomalies</span></div>
+      </section>
+
+      <section class="card stack">
+        <div><b>2. Build a study session</b></div>
+        <div class="row">
+          <select id="book" class="select"><option value="">All books</option></select>
+          <select id="chapter" class="select"><option value="">All chapters</option></select>
+          <select id="size" class="select"><option>10</option><option>25</option><option>50</option><option>100</option><option value="all">All eligible</option></select>
+          <button id="start" class="btn primary" type="button">Start quiz</button>
+        </div>
+        <div id="eligible" class="notice">Load a bank to calculate eligible questions.</div>
+      </section>
+
+      <section class="card stack">
+        <div><b>Source integrity</b></div>
+        <div id="integrity" class="notice"></div>
+        <details><summary>Show questions that have no usable source answer</summary><div id="anomalies" class="stack" style="margin-top:12px"></div></details>
+      </section>
+    </section>
+
+    <section id="quiz" class="card stack hidden">
+      <div class="progress"><div id="bar" style="width:0%"></div></div>
+      <div class="question-head"><div><b id="qCounter"></b><div id="qMeta" class="meta"></div></div><button id="quit" class="btn" type="button">End session</button></div>
+      <div id="qStem" class="question"></div>
+      <div id="qOptions" class="options"></div>
+      <button id="submit" class="btn primary" type="button" disabled>Check answer</button>
+      <div id="feedback" class="hidden"></div>
+      <button id="next" class="btn primary hidden" type="button">Next</button>
+    </section>
+
+    <section id="result" class="card stack hidden">
+      <div><b>Session complete</b></div>
+      <div class="grid">
+        <div class="stat"><b id="rScore">0</b><span>Correct</span></div>
+        <div class="stat"><b id="rTotal">0</b><span>Answered</span></div>
+        <div class="stat"><b id="rPct">0%</b><span>Accuracy</span></div>
+        <div class="stat"><b id="rWrong">0</b><span>Incorrect</span></div>
+      </div>
+      <button id="again" class="btn primary" type="button">New session</button>
+    </section>
+
+    <footer class="footer">Private study utility. Source anomalies are preserved rather than silently corrected.</footer>
+  </div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const els = Object.fromEntries(['file','clear','loadStatus','bankArea','sTotal','sReady','sComplex','sAnom','book','chapter','size','start','eligible','integrity','anomalies','quiz','bar','qCounter','qMeta','qStem','qOptions','submit','feedback','next','quit','result','rScore','rTotal','rPct','rWrong','again'].map(id => [id,$(id)]));
+  let bank = null, questions = [], session = [], idx = 0, selected = null, score = 0, checked = false;
+
+  const esc = (v='') => String(v).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  const shuffle = (arr) => { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+  const isReady = q => Number.isInteger(q.correctIndex) && Array.isArray(q.options) && q.options.length > q.correctIndex && q.correctIndex >= 0;
+  const isComplex = q => q.status === 'ready_complex_source' || q.contentType === 'matching';
+  const isAnomaly = q => q.status === 'source_answer_missing' || q.status === 'source_answer_invalid_label';
+
+  async function readFile(file){
+    const buf = await file.arrayBuffer();
+    let text;
+    if (file.name.endsWith('.gz')) {
+      if (!('DecompressionStream' in window)) throw new Error('This browser cannot open .gz directly. Use the JSON file instead.');
+      const ds = new DecompressionStream('gzip');
+      text = await new Response(new Blob([buf]).stream().pipeThrough(ds)).text();
+    } else text = new TextDecoder().decode(buf);
+    return JSON.parse(text);
+  }
+
+  function showStatus(message, kind='ok'){
+    els.loadStatus.textContent = message; els.loadStatus.className = `notice ${kind}`;
+  }
+
+  function normalizeBank(data){
+    if (!data || !Array.isArray(data.questions)) throw new Error('Invalid bank: expected a questions array.');
+    return data;
+  }
+
+  function loadBank(data, name){
+    bank = normalizeBank(data); questions = bank.questions;
+    const ready = questions.filter(isReady).length, complex = questions.filter(isComplex).length, anomalies = questions.filter(isAnomaly);
+    els.sTotal.textContent = questions.length.toLocaleString(); els.sReady.textContent = ready.toLocaleString(); els.sComplex.textContent = complex.toLocaleString(); els.sAnom.textContent = anomalies.length.toLocaleString();
+    fillBooks(); updateChapters(); updateEligible(); renderIntegrity(anomalies);
+    els.bankArea.classList.remove('hidden'); els.quiz.classList.add('hidden'); els.result.classList.add('hidden');
+    showStatus(`Loaded ${questions.length.toLocaleString()} questions from ${name}.`, 'ok');
+  }
+
+  function fillBooks(){
+    const books=[...new Set(questions.map(q=>q.sourceBook).filter(Boolean))].sort();
+    els.book.innerHTML='<option value="">All books</option>'+books.map(v=>`<option>${esc(v)}</option>`).join('');
+  }
+  function updateChapters(){
+    const book=els.book.value; const chapters=[...new Set(questions.filter(q=>!book||q.sourceBook===book).map(q=>q.chapter).filter(Boolean))].sort();
+    els.chapter.innerHTML='<option value="">All chapters</option>'+chapters.map(v=>`<option>${esc(v)}</option>`).join(''); updateEligible();
+  }
+  function eligibleQuestions(){
+    const b=els.book.value,c=els.chapter.value; return questions.filter(q=>isReady(q)&&(!b||q.sourceBook===b)&&(!c||q.chapter===c));
+  }
+  function updateEligible(){
+    if(!bank) return; const n=eligibleQuestions().length; els.eligible.textContent=`${n.toLocaleString()} single-answer questions are eligible for this filter. Complex-format and source-answer-anomaly items are excluded from scored sessions.`;
+    els.start.disabled=n===0;
+  }
+  function renderIntegrity(anoms){
+    const gapCount=Array.isArray(bank.sourceNumberingGaps)?bank.sourceNumberingGaps.length:(bank.sourceGapCount||0);
+    els.integrity.textContent=`Bank contains ${questions.length.toLocaleString()} questions. ${questions.filter(isReady).length.toLocaleString()} have explicit usable answers, ${questions.filter(isComplex).length.toLocaleString()} are complex-format, ${anoms.length.toLocaleString()} preserve missing/invalid source answers, and ${gapCount.toLocaleString()} source numbering gaps are recorded separately.`;
+    els.anomalies.innerHTML=anoms.map(q=>`<div class="notice warn"><b>${esc(q.sourceBook)} · ${esc(q.chapter)} · Q${esc(q.sourceQuestionNumber)}</b><div class="meta">PDF page ${esc(q.sourcePdfPage)} · ${esc(q.status)}</div><div>${esc(q.reviewNotes||'No normalized answer assigned.')}</div></div>`).join('') || '<div class="notice ok">No source-answer anomalies.</div>';
+  }
+
+  function startQuiz(){
+    const pool=shuffle(eligibleQuestions()); const raw=els.size.value; const count=raw==='all'?pool.length:Math.min(Number(raw),pool.length);
+    session=pool.slice(0,count); idx=0; score=0; selected=null; checked=false; els.bankArea.classList.add('hidden'); els.result.classList.add('hidden'); els.quiz.classList.remove('hidden'); renderQuestion();
+  }
+  function renderQuestion(){
+    const q=session[idx]; if(!q) return finish(); selected=null; checked=false; els.submit.disabled=true; els.submit.classList.remove('hidden'); els.next.classList.add('hidden'); els.feedback.className='hidden';
+    els.bar.style.width=`${Math.round((idx/session.length)*100)}%`; els.qCounter.textContent=`Question ${idx+1} of ${session.length}`;
+    els.qMeta.innerHTML=`${esc(q.sourceBook)} · ${esc(q.chapter)} · Source Q${esc(q.sourceQuestionNumber)} · PDF p.${esc(q.sourcePdfPage)}<br>${esc(q.status)}`;
+    els.qStem.textContent=q.stem||'(Stem unavailable)';
+    els.qOptions.innerHTML=q.options.map((o,i)=>`<label class="option" data-i="${i}"><input type="radio" name="answer" value="${i}"><span><b>${String.fromCharCode(65+i)}.</b> ${esc(o)}</span></label>`).join('');
+    els.qOptions.querySelectorAll('input').forEach(input=>input.addEventListener('change',e=>{selected=Number(e.target.value);els.submit.disabled=false;}));
+  }
+  function checkAnswer(){
+    if(selected===null||checked) return; checked=true; const q=session[idx]; const ok=selected===q.correctIndex; if(ok) score++;
+    els.qOptions.querySelectorAll('.option').forEach((el,i)=>{if(i===q.correctIndex)el.classList.add('correct'); else if(i===selected)el.classList.add('wrong'); el.querySelector('input').disabled=true;});
+    const exp=q.explanation||'No detailed explanation is available in the parsed bank for this item.';
+    els.feedback.className=`explanation ${ok?'ok':'warn'}`; els.feedback.innerHTML=`<b>${ok?'Correct':'Incorrect'}.</b> Source answer: ${String.fromCharCode(65+q.correctIndex)}.<br><br>${esc(exp)}`;
+    els.submit.classList.add('hidden'); els.next.classList.remove('hidden'); els.next.textContent=idx===session.length-1?'Finish':'Next';
+  }
+  function next(){ idx++; if(idx>=session.length) finish(); else renderQuestion(); }
+  function finish(){ els.quiz.classList.add('hidden'); els.result.classList.remove('hidden'); els.bar.style.width='100%'; const total=session.length,pct=total?Math.round(score/total*100):0; els.rScore.textContent=score;els.rTotal.textContent=total;els.rPct.textContent=`${pct}%`;els.rWrong.textContent=total-score; }
+  function resetToBank(){ els.result.classList.add('hidden');els.quiz.classList.add('hidden');els.bankArea.classList.remove('hidden');updateEligible(); }
+  function clear(){ bank=null;questions=[];session=[];els.file.value='';els.bankArea.classList.add('hidden');els.quiz.classList.add('hidden');els.result.classList.add('hidden');els.loadStatus.className='notice hidden'; }
+
+  els.file.addEventListener('change', async e=>{const f=e.target.files?.[0]; if(!f)return; try{showStatus('Reading bank…','ok'); loadBank(await readFile(f),f.name);}catch(err){showStatus(err instanceof Error?err.message:String(err),'error');}});
+  els.clear.addEventListener('click',clear); els.book.addEventListener('change',updateChapters); els.chapter.addEventListener('change',updateEligible); els.start.addEventListener('click',startQuiz); els.submit.addEventListener('click',checkAnswer); els.next.addEventListener('click',next); els.quit.addEventListener('click',resetToBank); els.again.addEventListener('click',resetToBank);
+})();
+</script>
+</body>
+</html>
