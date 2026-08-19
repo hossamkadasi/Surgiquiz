@@ -6,16 +6,18 @@ This repository intentionally contains only the shareable beta UI and the **priv
 
 ## Private Study workflow
 
-Open `/private-study.html` and select the private bank file locally in the browser:
+Open `/private-study.html` and select the current private bank file locally in the browser:
 
-- `SurgiQuiz_Private_Study_Bank_All_3_Books_v5.json`, or
-- `SurgiQuiz_Private_Study_Bank_All_3_Books_v5.json.gz`
+- `SurgiQuiz_Private_Study_Bank_All_3_Books_v7_SourceIntegrity.json`, or
+- `SurgiQuiz_Private_Study_Bank_All_3_Books_v7_SourceIntegrity.json.gz`
 
 The reconciled private bank represents **3,840 source questions** across three books:
 
 - Review of Surgery Volume I — 1,365
 - Review of Surgery Volume II — 1,391
 - MasterPass MCQs for FRCS — 1,084
+
+Source-integrity v7 preserves every source question while removing verified cross-question parsing spillover. It contains 3,828 scored-ready single-answer questions, one matching-format question, 10 questions whose source answer is missing/blank, and one question whose source prints an invalid answer label. No missing or invalid source answer is silently inferred.
 
 The importer currently supports:
 
@@ -37,7 +39,7 @@ Only question IDs and local study counters are persisted in browser `localStorag
 - Publish directory: `dist`
 - Node: 22
 
-The production site should be connected to the `main` branch for continuous deployment.
+The production site is connected to `main` for continuous deployment. GitHub Actions builds pull requests to `main` and pushes to `main`.
 
 ## Status
 
