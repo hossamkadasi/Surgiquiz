@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" aria-labelledby="t d">
+<title id="t">Thyroid surgical anatomy schematic</title><desc id="d">Educational schematic showing thyroid lobes, trachea, recurrent laryngeal nerve and parathyroid glands.</desc>
+<rect width="720" height="460" rx="28" fill="#f7fbfb"/>
+<rect x="326" y="84" width="72" height="284" rx="32" fill="#d7e6ea" stroke="#688b95" stroke-width="4"/>
+<g stroke="#9ab3ba" stroke-width="4"><path d="M326 120h72"/><path d="M326 154h72"/><path d="M326 188h72"/><path d="M326 222h72"/><path d="M326 256h72"/><path d="M326 290h72"/><path d="M326 324h72"/></g>
+<path d="M278 144c-56 18-78 77-64 133 12 48 45 79 91 65 34-10 43-42 39-88-5-58-23-101-66-110z" fill="#d58a9d" stroke="#944f65" stroke-width="4"/>
+<path d="M446 144c56 18 78 77 64 133-12 48-45 79-91 65-34-10-43-42-39-88 5-58 23-101 66-110z" fill="#d58a9d" stroke="#944f65" stroke-width="4"/>
+<path d="M305 236c22 15 92 15 114 0" stroke="#944f65" stroke-width="18" fill="none"/>
+<path d="M294 340c-12-56-7-112 14-169" stroke="#d1a11c" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path d="M430 340c12-56 7-112-14-169" stroke="#d1a11c" stroke-width="8" fill="none" stroke-linecap="round"/>
+<g fill="#e3bf37" stroke="#9b7b13" stroke-width="2"><circle cx="290" cy="218" r="10"/><circle cx="304" cy="296" r="10"/><circle cx="434" cy="218" r="10"/><circle cx="420" cy="296" r="10"/></g>
+<g font-family="Arial, sans-serif" font-size="20" fill="#17353a"><text x="78" y="116">Thyroid lobes</text><text x="497" y="102">Trachea</text><text x="62" y="354">Recurrent laryngeal nerve</text><text x="474" y="316">Parathyroid glands</text></g>
+<g stroke="#59777a" stroke-width="2"><path d="M195 112l75 45"/><path d="M498 108l-98 23"/><path d="M278 347l16-25"/><path d="M480 309l-43-15"/></g>
+<text x="36" y="430" font-family="Arial" font-size="15" fill="#6a7b7e">Educational schematic — anatomic variants require validated surgical references.</text>
+</svg>
