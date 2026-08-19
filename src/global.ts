@@ -24,8 +24,10 @@ export const examTracks: Array<{ id: ExamTrack; title: string; subtitle: string 
 
 const ui: Record<Locale, Record<string, string>> = {
   en: {
-    global: 'Global', language: 'Language', region: 'Region', examTrack: 'Exam track', save: 'Save profile',
-    globalSettings: 'Global learning profile', globalSettingsBody: 'Personalize language, region and exam orientation. Medical content falls back to reviewed English when a translation is unavailable.',
+    global: 'Global', language: 'Language', region: 'Region', examTrack: 'Exam track', save: 'Save profile', continue: 'Continue', editProfile: 'Edit profile',
+    globalWelcome: 'Set up your global learning profile', globalSettings: 'Global learning profile', globalSettingsBody: 'Personalize language, region and exam orientation. Medical content falls back to reviewed English when a translation is unavailable.',
+    translationBoundary: 'French and Spanish currently localize the product shell; reviewed medical learning content falls back to English until specialist translation is available.',
+    examBoundary: 'Exam tracks are learning orientations only and do not imply official affiliation, endorsement, or blueprint certification.',
     interfacePreview: 'Interface preview', fullContent: 'Full interface + content', settingsSaved: 'Global profile saved.',
     todaysPlan: "Today's Plan", qbank: 'QBank', cases: 'Cases', viva: 'AI Viva', anatomy: 'Anatomy', coach: 'AI Coach', import: 'PDF / Case', performance: 'Performance',
     startQuiz: 'Start quiz', surgicalAnatomy: 'Surgical Anatomy', adaptiveLearning: 'Adaptive Surgical Learning',
@@ -35,8 +37,10 @@ const ui: Record<Locale, Record<string, string>> = {
     resetProgress: 'Reset progress', attempts: 'Attempts', accuracy: 'Accuracy', branchingCases: 'Branching cases', anatomyModules: 'Anatomy modules',
   },
   ar: {
-    global: 'عالمي', language: 'اللغة', region: 'المنطقة', examTrack: 'مسار الامتحان', save: 'حفظ الملف',
-    globalSettings: 'الملف التعليمي العالمي', globalSettingsBody: 'خصص اللغة والمنطقة ومسار الامتحان. عند غياب ترجمة موثوقة للمحتوى الطبي سيظهر المحتوى الإنجليزي المراجع.',
+    global: 'عالمي', language: 'اللغة', region: 'المنطقة', examTrack: 'مسار الامتحان', save: 'حفظ الملف', continue: 'متابعة', editProfile: 'تعديل الملف',
+    globalWelcome: 'إعداد ملفك التعليمي العالمي', globalSettings: 'الملف التعليمي العالمي', globalSettingsBody: 'خصص اللغة والمنطقة ومسار الامتحان. عند غياب ترجمة موثوقة للمحتوى الطبي سيظهر المحتوى الإنجليزي المراجع.',
+    translationBoundary: 'الفرنسية والإسبانية حاليًا للواجهة؛ المحتوى الطبي المراجع يعود إلى الإنجليزية حتى تتوفر ترجمة تخصصية موثوقة.',
+    examBoundary: 'مسارات الامتحانات هي توجهات تعليمية فقط ولا تعني اعتمادًا أو ارتباطًا رسميًا أو مطابقة معتمدة للمخطط الامتحاني.',
     interfacePreview: 'معاينة واجهة', fullContent: 'واجهة ومحتوى كاملان', settingsSaved: 'تم حفظ الملف العالمي.',
     todaysPlan: 'خطة اليوم', qbank: 'الأسئلة', cases: 'الحالات', viva: 'Viva AI', anatomy: 'التشريح', coach: 'المدرب', import: 'PDF / Case', performance: 'الأداء',
     startQuiz: 'ابدأ اختبارًا', surgicalAnatomy: 'التشريح الجراحي', adaptiveLearning: 'Adaptive Surgical Learning',
@@ -46,8 +50,10 @@ const ui: Record<Locale, Record<string, string>> = {
     resetProgress: 'إعادة التقدم', attempts: 'محاولة', accuracy: 'الدقة', branchingCases: 'حالات متفرعة', anatomyModules: 'وحدات تشريح',
   },
   fr: {
-    global: 'Global', language: 'Langue', region: 'Région', examTrack: "Parcours d'examen", save: 'Enregistrer',
-    globalSettings: "Profil d'apprentissage global", globalSettingsBody: "Personnalisez la langue, la région et l'orientation de l'examen. Le contenu médical revient à l'anglais validé lorsqu'une traduction n'est pas disponible.",
+    global: 'Global', language: 'Langue', region: 'Région', examTrack: "Parcours d'examen", save: 'Enregistrer', continue: 'Continuer', editProfile: 'Modifier le profil',
+    globalWelcome: "Configurer votre profil d'apprentissage global", globalSettings: "Profil d'apprentissage global", globalSettingsBody: "Personnalisez la langue, la région et l'orientation de l'examen. Le contenu médical revient à l'anglais validé lorsqu'une traduction n'est pas disponible.",
+    translationBoundary: "Le français et l'espagnol localisent actuellement l'interface; le contenu médical validé revient à l'anglais jusqu'à disponibilité d'une traduction spécialisée.",
+    examBoundary: "Les parcours d'examen sont des orientations d'apprentissage et n'impliquent ni affiliation officielle, ni approbation, ni certification du blueprint.",
     interfacePreview: "Aperçu de l'interface", fullContent: 'Interface + contenu complets', settingsSaved: 'Profil global enregistré.',
     todaysPlan: 'Plan du jour', qbank: 'QBank', cases: 'Cas', viva: 'Viva IA', anatomy: 'Anatomie', coach: 'Coach IA', import: 'PDF / Cas', performance: 'Performance',
     startQuiz: 'Commencer', surgicalAnatomy: 'Anatomie chirurgicale', adaptiveLearning: 'Apprentissage chirurgical adaptatif',
@@ -57,8 +63,10 @@ const ui: Record<Locale, Record<string, string>> = {
     resetProgress: 'Réinitialiser', attempts: 'Tentatives', accuracy: 'Précision', branchingCases: 'Cas à embranchements', anatomyModules: "Modules d'anatomie",
   },
   es: {
-    global: 'Global', language: 'Idioma', region: 'Región', examTrack: 'Ruta de examen', save: 'Guardar perfil',
-    globalSettings: 'Perfil global de aprendizaje', globalSettingsBody: 'Personaliza idioma, región y orientación del examen. El contenido médico usa inglés revisado cuando no hay una traducción disponible.',
+    global: 'Global', language: 'Idioma', region: 'Región', examTrack: 'Ruta de examen', save: 'Guardar perfil', continue: 'Continuar', editProfile: 'Editar perfil',
+    globalWelcome: 'Configura tu perfil global de aprendizaje', globalSettings: 'Perfil global de aprendizaje', globalSettingsBody: 'Personaliza idioma, región y orientación del examen. El contenido médico usa inglés revisado cuando no hay una traducción disponible.',
+    translationBoundary: 'El francés y el español localizan actualmente la interfaz; el contenido médico revisado usa inglés hasta que exista traducción especializada.',
+    examBoundary: 'Las rutas de examen son orientaciones educativas y no implican afiliación oficial, respaldo ni certificación del blueprint.',
     interfacePreview: 'Vista previa de interfaz', fullContent: 'Interfaz + contenido completos', settingsSaved: 'Perfil global guardado.',
     todaysPlan: 'Plan de hoy', qbank: 'QBank', cases: 'Casos', viva: 'Viva IA', anatomy: 'Anatomía', coach: 'Coach IA', import: 'PDF / Caso', performance: 'Rendimiento',
     startQuiz: 'Iniciar prueba', surgicalAnatomy: 'Anatomía quirúrgica', adaptiveLearning: 'Aprendizaje quirúrgico adaptativo',
