@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" aria-labelledby="t d">
+<title id="t">Biliary surgical anatomy schematic</title><desc id="d">Educational schematic showing gallbladder, cystic duct, common hepatic duct, common bile duct, cystic artery and right hepatic artery.</desc>
+<rect width="720" height="460" rx="28" fill="#f7fbfb"/>
+<path d="M360 62c90 0 172 50 210 126-72 18-140 17-204 3-72-16-138-14-205 6 36-82 107-135 199-135z" fill="#b7ddc8" stroke="#4b8f72" stroke-width="4"/>
+<path d="M324 160c-24 34-31 78-17 116 9 25 28 43 51 40 31-4 45-45 31-84-12-34-37-61-65-72z" fill="#8fcf72" stroke="#3a7d43" stroke-width="4"/>
+<path d="M363 308c18 18 36 28 57 30" fill="none" stroke="#6d9f3e" stroke-width="12" stroke-linecap="round"/>
+<path d="M418 338c2-70 3-131 2-184" fill="none" stroke="#d3a83d" stroke-width="14" stroke-linecap="round"/>
+<path d="M420 181c-35-15-62-17-84-6" fill="none" stroke="#d3a83d" stroke-width="12" stroke-linecap="round"/>
+<path d="M458 90c-5 68-5 120 1 155" fill="none" stroke="#bf3a3a" stroke-width="12" stroke-linecap="round"/>
+<path d="M456 163c-44 15-77 40-98 76" fill="none" stroke="#bf3a3a" stroke-width="9" stroke-linecap="round"/>
+<circle cx="358" cy="239" r="7" fill="#7b1e1e"/>
+<g font-family="Arial, sans-serif" font-size="20" fill="#17353a">
+<text x="58" y="73">Liver</text><text x="92" y="252">Gallbladder</text><text x="472" y="127">Right hepatic artery</text><text x="470" y="298">Common hepatic duct</text><text x="470" y="370">Common bile duct</text><text x="188" y="360">Cystic duct</text><text x="180" y="218">Cystic artery</text>
+</g>
+<g stroke="#59777a" stroke-width="2"><path d="M110 80l120 10"/><path d="M205 245l97 10"/><path d="M470 122l-10 35"/><path d="M470 291l-45 8"/><path d="M470 365l-45-15"/><path d="M278 352l79-40"/><path d="M285 214l67 21"/></g>
+<text x="36" y="430" font-family="Arial" font-size="15" fill="#6a7b7e">Educational schematic — not a substitute for a validated operative atlas.</text>
+</svg>
