@@ -1,0 +1,16 @@
+{
+  "name": "SurgiQuiz — Global Adaptive Surgical Learning",
+  "short_name": "SurgiQuiz",
+  "description": "Adaptive surgical education with MCQs, branching cases, AI viva, surgical anatomy, and personalized learning.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f5f9f9",
+  "theme_color": "#0d9488",
+  "lang": "en",
+  "dir": "auto",
+  "categories": ["education", "medical"],
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
