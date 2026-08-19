@@ -5,164 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SurgiQuiz Private Study</title>
   <style>
-    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#15202b;background:#f5f7fa}
-    *{box-sizing:border-box}body{margin:0}.wrap{max-width:1120px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}.brand h1{margin:0;font-size:28px}.brand p{margin:4px 0 0;color:#5c6773}.card{background:white;border:1px solid #dce2e8;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.04)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat b{display:block;font-size:24px}.stat span{color:#637083;font-size:13px}.stack{display:grid;gap:14px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn,.select,.input{border:1px solid #cfd7df;background:white;border-radius:10px;padding:10px 12px;font:inherit}.btn{cursor:pointer}.btn.primary{background:#11263d;color:white;border-color:#11263d}.btn:disabled{opacity:.5;cursor:not-allowed}.select{min-width:180px}.input{flex:1;min-width:220px}.notice{padding:12px;border-radius:10px;background:#f1f5f9;color:#44505e;font-size:14px}.ok{background:#edf8f0}.warn{background:#fff6e6}.error{background:#fff0f0}.hidden{display:none}.question-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.meta{font-size:12px;color:#687586;line-height:1.6}.question{font-size:20px;line-height:1.5;margin:14px 0}.options{display:grid;gap:10px}.option{display:flex;gap:10px;align-items:flex-start;border:1px solid #d6dde5;border-radius:12px;padding:12px;cursor:pointer}.option input{margin-top:3px}.option.correct{border-color:#2c7a4b;background:#edf8f0}.option.wrong{border-color:#b94b4b;background:#fff0f0}.explanation{margin-top:14px;padding:14px;border-radius:12px;background:#f6f8fb;line-height:1.55}.footer{color:#6d7884;font-size:12px;text-align:center;margin:18px 0}.progress{height:8px;background:#e7ebef;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:#11263d}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}.spacer{height:6px}
-    @media (max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.top{align-items:flex-start;flex-direction:column}.question-head{flex-direction:column}}
+    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#15202b;background:#f5f7fa}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1180px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}.brand h1{margin:0;font-size:28px}.brand p{margin:4px 0 0;color:#5c6773}.card{background:white;border:1px solid #dce2e8;border-radius:16px;padding:18px;box-shadow:0 4px 16px rgba(0,0,0,.04)}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat b{display:block;font-size:24px}.stat span{color:#637083;font-size:13px}.stack{display:grid;gap:14px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.btn,.select,.input{border:1px solid #cfd7df;background:white;border-radius:10px;padding:10px 12px;font:inherit}.btn{cursor:pointer;text-decoration:none;color:inherit}.btn.primary{background:#11263d;color:white;border-color:#11263d}.btn.active{background:#e9eef5;border-color:#8998aa}.btn:disabled{opacity:.5;cursor:not-allowed}.select{min-width:180px}.input{flex:1;min-width:220px}.notice{padding:12px;border-radius:10px;background:#f1f5f9;color:#44505e;font-size:14px}.ok{background:#edf8f0}.warn{background:#fff6e6}.error{background:#fff0f0}.hidden{display:none}.question-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.meta{font-size:12px;color:#687586;line-height:1.6}.question{font-size:20px;line-height:1.5;margin:14px 0}.options{display:grid;gap:10px}.option{display:flex;gap:10px;align-items:flex-start;border:1px solid #d6dde5;border-radius:12px;padding:12px;cursor:pointer}.option input{margin-top:3px}.option.correct{border-color:#2c7a4b;background:#edf8f0}.option.wrong{border-color:#b94b4b;background:#fff0f0}.explanation{margin-top:14px;padding:14px;border-radius:12px;background:#f6f8fb;line-height:1.55;white-space:pre-wrap}.footer{color:#6d7884;font-size:12px;text-align:center;margin:18px 0}.progress{height:8px;background:#e7ebef;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:#11263d}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}.spacer{height:6px}.pill{font-size:12px;padding:5px 8px;background:#eef2f6;border-radius:999px;color:#586576}.toolbar{display:grid;grid-template-columns:minmax(260px,1fr) repeat(3,minmax(150px,auto));gap:10px}.browser-list{display:grid;gap:8px;max-height:420px;overflow:auto}.browser-item{border:1px solid #dde3ea;border-radius:12px;padding:12px;display:grid;gap:6px}.browser-item .stem{font-weight:600;line-height:1.4}.browser-item .actions{display:flex;gap:8px;flex-wrap:wrap}.star{font-size:18px;line-height:1}.mini-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.empty{padding:22px;text-align:center;color:#6d7884}.kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#eef2f6;padding:2px 6px;border-radius:5px;font-size:11px}.danger{border-color:#b94b4b;color:#8b2f2f}.split{display:grid;grid-template-columns:2fr 1fr;gap:14px}@media(max-width:900px){.toolbar{grid-template-columns:1fr 1fr}.split{grid-template-columns:1fr}.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.top{align-items:flex-start;flex-direction:column}.question-head{flex-direction:column}.toolbar{grid-template-columns:1fr}.wrap{padding:14px}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="top">
-      <div class="brand"><h1>SurgiQuiz Private Study</h1><p>Local question-bank review. Your selected file stays in this browser session.</p></div>
-      <a class="btn" href="/">Back to Beta</a>
-    </header>
-
-    <section class="card stack" id="loaderCard">
-      <div><b>1. Load private bank</b></div>
-      <div class="notice">Select <span class="mono">SurgiQuiz_Private_Study_Bank_Final_v4.json</span> or its <span class="mono">.json.gz</span> version. The page reads the file locally; it is not uploaded by this page.</div>
-      <div class="row"><input id="file" class="input" type="file" accept=".json,.gz,.json.gz,application/json,application/gzip" /><button id="clear" class="btn" type="button">Clear</button></div>
-      <div id="loadStatus" class="notice hidden"></div>
-    </section>
-
-    <div class="spacer"></div>
-    <section id="bankArea" class="stack hidden">
-      <section class="grid">
-        <div class="card stat"><b id="sTotal">0</b><span>Total questions</span></div>
-        <div class="card stat"><b id="sReady">0</b><span>Single-answer ready</span></div>
-        <div class="card stat"><b id="sComplex">0</b><span>Complex-format</span></div>
-        <div class="card stat"><b id="sAnom">0</b><span>Source-answer anomalies</span></div>
-      </section>
-
-      <section class="card stack">
-        <div><b>2. Build a study session</b></div>
-        <div class="row">
-          <select id="book" class="select"><option value="">All books</option></select>
-          <select id="chapter" class="select"><option value="">All chapters</option></select>
-          <select id="size" class="select"><option>10</option><option>25</option><option>50</option><option>100</option><option value="all">All eligible</option></select>
-          <button id="start" class="btn primary" type="button">Start quiz</button>
-        </div>
-        <div id="eligible" class="notice">Load a bank to calculate eligible questions.</div>
-      </section>
-
-      <section class="card stack">
-        <div><b>Source integrity</b></div>
-        <div id="integrity" class="notice"></div>
-        <details><summary>Show questions that have no usable source answer</summary><div id="anomalies" class="stack" style="margin-top:12px"></div></details>
-      </section>
-    </section>
-
-    <section id="quiz" class="card stack hidden">
-      <div class="progress"><div id="bar" style="width:0%"></div></div>
-      <div class="question-head"><div><b id="qCounter"></b><div id="qMeta" class="meta"></div></div><button id="quit" class="btn" type="button">End session</button></div>
-      <div id="qStem" class="question"></div>
-      <div id="qOptions" class="options"></div>
-      <button id="submit" class="btn primary" type="button" disabled>Check answer</button>
-      <div id="feedback" class="hidden"></div>
-      <button id="next" class="btn primary hidden" type="button">Next</button>
-    </section>
-
-    <section id="result" class="card stack hidden">
-      <div><b>Session complete</b></div>
-      <div class="grid">
-        <div class="stat"><b id="rScore">0</b><span>Correct</span></div>
-        <div class="stat"><b id="rTotal">0</b><span>Answered</span></div>
-        <div class="stat"><b id="rPct">0%</b><span>Accuracy</span></div>
-        <div class="stat"><b id="rWrong">0</b><span>Incorrect</span></div>
-      </div>
-      <button id="again" class="btn primary" type="button">New session</button>
-    </section>
-
-    <footer class="footer">Private study utility. Source anomalies are preserved rather than silently corrected.</footer>
-  </div>
+<div class="wrap">
+<header class="top"><div class="brand"><h1>SurgiQuiz Private Study</h1><p>Local study workflow for the reconciled three-book question bank.</p></div><div class="row"><a class="btn" href="/">Back to Beta</a><button id="resetProgress" class="btn danger" type="button">Reset local progress</button></div></header>
+<section class="card stack"><div><b>1. Load private bank</b></div><div class="notice">Select <span class="mono">SurgiQuiz_Private_Study_Bank_All_3_Books_v5.json</span> or its <span class="mono">.json.gz</span> version. The file is read locally and is not uploaded by this page.</div><div class="row"><input id="file" class="input" type="file" accept=".json,.gz,.json.gz,application/json,application/gzip"><button id="clear" class="btn" type="button">Unload bank</button></div><div id="loadStatus" class="notice hidden"></div></section>
+<div class="spacer"></div>
+<section id="bankArea" class="stack hidden">
+<section class="grid"><div class="card stat"><b id="sTotal">0</b><span>Total questions</span></div><div class="card stat"><b id="sReady">0</b><span>Scored-ready</span></div><div class="card stat"><b id="sFav">0</b><span>Favorites</span></div><div class="card stat"><b id="sMistakes">0</b><span>Mistake queue</span></div></section>
+<section class="mini-grid"><div class="card stat"><b id="sAttempted">0</b><span>Attempted</span></div><div class="card stat"><b id="sCorrect">0</b><span>Correct attempts</span></div><div class="card stat"><b id="sWrong">0</b><span>Wrong attempts</span></div><div class="card stat"><b id="sUnseen">0</b><span>Unseen</span></div><div class="card stat"><b id="sAccuracy">0%</b><span>Lifetime accuracy</span></div></section>
+<section class="card stack"><div><b>2. Filter and choose a study mode</b></div><div class="toolbar"><input id="search" class="input" type="search" placeholder="Search question text, chapter, or source…"><select id="book" class="select"><option value="">All books</option></select><select id="chapter" class="select"><option value="">All chapters</option></select><select id="mode" class="select"><option value="random">Random eligible</option><option value="unseen">Unseen only</option><option value="mistakes">Mistakes only</option><option value="favorites">Favorites only</option></select></div><div class="row"><select id="size" class="select"><option>10</option><option>25</option><option>50</option><option>100</option><option value="all">All eligible</option></select><button id="start" class="btn primary" type="button">Start quiz</button><button id="browseBtn" class="btn" type="button">Browse filtered questions</button></div><div id="eligible" class="notice">Load a bank to calculate eligible questions.</div></section>
+<section id="browser" class="card stack hidden"><div class="question-head"><div><b>Question browser</b><div id="browserMeta" class="meta"></div></div><button id="closeBrowser" class="btn" type="button">Close</button></div><div id="browserList" class="browser-list"></div></section>
+<section class="split"><section class="card stack"><div><b>Source integrity</b></div><div id="integrity" class="notice"></div><details><summary>Show questions with no usable source answer</summary><div id="anomalies" class="stack" style="margin-top:12px"></div></details></section><section class="card stack"><div><b>Local progress</b></div><div class="notice">Favorites, attempts, and mistakes are stored only as question IDs and counters in <span class="kbd">localStorage</span>. Source text remains in the selected local file.</div><button id="mistakeSession" class="btn" type="button">Study mistakes</button><button id="favoriteSession" class="btn" type="button">Study favorites</button></section></section>
+</section>
+<section id="quiz" class="card stack hidden"><div class="progress"><div id="bar" style="width:0%"></div></div><div class="question-head"><div><b id="qCounter"></b><div id="qMeta" class="meta"></div></div><div class="row"><button id="favorite" class="btn" type="button"><span class="star">☆</span> Favorite</button><button id="quit" class="btn" type="button">End session</button></div></div><div id="qStem" class="question"></div><div id="qOptions" class="options"></div><button id="submit" class="btn primary" type="button" disabled>Check answer</button><div id="feedback" class="hidden"></div><div class="row"><button id="next" class="btn primary hidden" type="button">Next</button><button id="removeMistake" class="btn hidden" type="button">Mark as reviewed</button></div></section>
+<section id="result" class="card stack hidden"><div><b>Session complete</b></div><section class="grid"><div class="stat"><b id="rScore">0</b><span>Correct</span></div><div class="stat"><b id="rTotal">0</b><span>Answered</span></div><div class="stat"><b id="rPct">0%</b><span>Accuracy</span></div><div class="stat"><b id="rWrong">0</b><span>Incorrect</span></div></section><div class="row"><button id="again" class="btn primary" type="button">New session</button><button id="reviewWrong" class="btn" type="button">Review mistakes</button></div></section>
+<footer class="footer">Private study utility. Source anomalies are preserved instead of silently corrected.</footer>
+</div>
 <script>
-(() => {
-  const $ = (id) => document.getElementById(id);
-  const els = Object.fromEntries(['file','clear','loadStatus','bankArea','sTotal','sReady','sComplex','sAnom','book','chapter','size','start','eligible','integrity','anomalies','quiz','bar','qCounter','qMeta','qStem','qOptions','submit','feedback','next','quit','result','rScore','rTotal','rPct','rWrong','again'].map(id => [id,$(id)]));
-  let bank = null, questions = [], session = [], idx = 0, selected = null, score = 0, checked = false;
-
-  const esc = (v='') => String(v).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  const shuffle = (arr) => { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
-  const isReady = q => Number.isInteger(q.correctIndex) && Array.isArray(q.options) && q.options.length > q.correctIndex && q.correctIndex >= 0;
-  const isComplex = q => q.status === 'ready_complex_source' || q.contentType === 'matching';
-  const isAnomaly = q => q.status === 'source_answer_missing' || q.status === 'source_answer_invalid_label';
-
-  async function readFile(file){
-    const buf = await file.arrayBuffer();
-    let text;
-    if (file.name.endsWith('.gz')) {
-      if (!('DecompressionStream' in window)) throw new Error('This browser cannot open .gz directly. Use the JSON file instead.');
-      const ds = new DecompressionStream('gzip');
-      text = await new Response(new Blob([buf]).stream().pipeThrough(ds)).text();
-    } else text = new TextDecoder().decode(buf);
-    return JSON.parse(text);
-  }
-
-  function showStatus(message, kind='ok'){
-    els.loadStatus.textContent = message; els.loadStatus.className = `notice ${kind}`;
-  }
-
-  function normalizeBank(data){
-    if (!data || !Array.isArray(data.questions)) throw new Error('Invalid bank: expected a questions array.');
-    return data;
-  }
-
-  function loadBank(data, name){
-    bank = normalizeBank(data); questions = bank.questions;
-    const ready = questions.filter(isReady).length, complex = questions.filter(isComplex).length, anomalies = questions.filter(isAnomaly);
-    els.sTotal.textContent = questions.length.toLocaleString(); els.sReady.textContent = ready.toLocaleString(); els.sComplex.textContent = complex.toLocaleString(); els.sAnom.textContent = anomalies.length.toLocaleString();
-    fillBooks(); updateChapters(); updateEligible(); renderIntegrity(anomalies);
-    els.bankArea.classList.remove('hidden'); els.quiz.classList.add('hidden'); els.result.classList.add('hidden');
-    showStatus(`Loaded ${questions.length.toLocaleString()} questions from ${name}.`, 'ok');
-  }
-
-  function fillBooks(){
-    const books=[...new Set(questions.map(q=>q.sourceBook).filter(Boolean))].sort();
-    els.book.innerHTML='<option value="">All books</option>'+books.map(v=>`<option>${esc(v)}</option>`).join('');
-  }
-  function updateChapters(){
-    const book=els.book.value; const chapters=[...new Set(questions.filter(q=>!book||q.sourceBook===book).map(q=>q.chapter).filter(Boolean))].sort();
-    els.chapter.innerHTML='<option value="">All chapters</option>'+chapters.map(v=>`<option>${esc(v)}</option>`).join(''); updateEligible();
-  }
-  function eligibleQuestions(){
-    const b=els.book.value,c=els.chapter.value; return questions.filter(q=>isReady(q)&&(!b||q.sourceBook===b)&&(!c||q.chapter===c));
-  }
-  function updateEligible(){
-    if(!bank) return; const n=eligibleQuestions().length; els.eligible.textContent=`${n.toLocaleString()} single-answer questions are eligible for this filter. Complex-format and source-answer-anomaly items are excluded from scored sessions.`;
-    els.start.disabled=n===0;
-  }
-  function renderIntegrity(anoms){
-    const gapCount=Array.isArray(bank.sourceNumberingGaps)?bank.sourceNumberingGaps.length:(bank.sourceGapCount||0);
-    els.integrity.textContent=`Bank contains ${questions.length.toLocaleString()} questions. ${questions.filter(isReady).length.toLocaleString()} have explicit usable answers, ${questions.filter(isComplex).length.toLocaleString()} are complex-format, ${anoms.length.toLocaleString()} preserve missing/invalid source answers, and ${gapCount.toLocaleString()} source numbering gaps are recorded separately.`;
-    els.anomalies.innerHTML=anoms.map(q=>`<div class="notice warn"><b>${esc(q.sourceBook)} · ${esc(q.chapter)} · Q${esc(q.sourceQuestionNumber)}</b><div class="meta">PDF page ${esc(q.sourcePdfPage)} · ${esc(q.status)}</div><div>${esc(q.reviewNotes||'No normalized answer assigned.')}</div></div>`).join('') || '<div class="notice ok">No source-answer anomalies.</div>';
-  }
-
-  function startQuiz(){
-    const pool=shuffle(eligibleQuestions()); const raw=els.size.value; const count=raw==='all'?pool.length:Math.min(Number(raw),pool.length);
-    session=pool.slice(0,count); idx=0; score=0; selected=null; checked=false; els.bankArea.classList.add('hidden'); els.result.classList.add('hidden'); els.quiz.classList.remove('hidden'); renderQuestion();
-  }
-  function renderQuestion(){
-    const q=session[idx]; if(!q) return finish(); selected=null; checked=false; els.submit.disabled=true; els.submit.classList.remove('hidden'); els.next.classList.add('hidden'); els.feedback.className='hidden';
-    els.bar.style.width=`${Math.round((idx/session.length)*100)}%`; els.qCounter.textContent=`Question ${idx+1} of ${session.length}`;
-    els.qMeta.innerHTML=`${esc(q.sourceBook)} · ${esc(q.chapter)} · Source Q${esc(q.sourceQuestionNumber)} · PDF p.${esc(q.sourcePdfPage)}<br>${esc(q.status)}`;
-    els.qStem.textContent=q.stem||'(Stem unavailable)';
-    els.qOptions.innerHTML=q.options.map((o,i)=>`<label class="option" data-i="${i}"><input type="radio" name="answer" value="${i}"><span><b>${String.fromCharCode(65+i)}.</b> ${esc(o)}</span></label>`).join('');
-    els.qOptions.querySelectorAll('input').forEach(input=>input.addEventListener('change',e=>{selected=Number(e.target.value);els.submit.disabled=false;}));
-  }
-  function checkAnswer(){
-    if(selected===null||checked) return; checked=true; const q=session[idx]; const ok=selected===q.correctIndex; if(ok) score++;
-    els.qOptions.querySelectorAll('.option').forEach((el,i)=>{if(i===q.correctIndex)el.classList.add('correct'); else if(i===selected)el.classList.add('wrong'); el.querySelector('input').disabled=true;});
-    const exp=q.explanation||'No detailed explanation is available in the parsed bank for this item.';
-    els.feedback.className=`explanation ${ok?'ok':'warn'}`; els.feedback.innerHTML=`<b>${ok?'Correct':'Incorrect'}.</b> Source answer: ${String.fromCharCode(65+q.correctIndex)}.<br><br>${esc(exp)}`;
-    els.submit.classList.add('hidden'); els.next.classList.remove('hidden'); els.next.textContent=idx===session.length-1?'Finish':'Next';
-  }
-  function next(){ idx++; if(idx>=session.length) finish(); else renderQuestion(); }
-  function finish(){ els.quiz.classList.add('hidden'); els.result.classList.remove('hidden'); els.bar.style.width='100%'; const total=session.length,pct=total?Math.round(score/total*100):0; els.rScore.textContent=score;els.rTotal.textContent=total;els.rPct.textContent=`${pct}%`;els.rWrong.textContent=total-score; }
-  function resetToBank(){ els.result.classList.add('hidden');els.quiz.classList.add('hidden');els.bankArea.classList.remove('hidden');updateEligible(); }
-  function clear(){ bank=null;questions=[];session=[];els.file.value='';els.bankArea.classList.add('hidden');els.quiz.classList.add('hidden');els.result.classList.add('hidden');els.loadStatus.className='notice hidden'; }
-
-  els.file.addEventListener('change', async e=>{const f=e.target.files?.[0]; if(!f)return; try{showStatus('Reading bank…','ok'); loadBank(await readFile(f),f.name);}catch(err){showStatus(err instanceof Error?err.message:String(err),'error');}});
-  els.clear.addEventListener('click',clear); els.book.addEventListener('change',updateChapters); els.chapter.addEventListener('change',updateEligible); els.start.addEventListener('click',startQuiz); els.submit.addEventListener('click',checkAnswer); els.next.addEventListener('click',next); els.quit.addEventListener('click',resetToBank); els.again.addEventListener('click',resetToBank);
-})();
+(()=>{const $=id=>document.getElementById(id),ids=['file','clear','loadStatus','bankArea','sTotal','sReady','sFav','sMistakes','sAttempted','sCorrect','sWrong','sUnseen','sAccuracy','search','book','chapter','mode','size','start','browseBtn','eligible','browser','browserMeta','browserList','closeBrowser','integrity','anomalies','mistakeSession','favoriteSession','quiz','bar','qCounter','qMeta','qStem','qOptions','submit','feedback','next','favorite','removeMistake','quit','result','rScore','rTotal','rPct','rWrong','again','reviewWrong','resetProgress'],e=Object.fromEntries(ids.map(id=>[id,$(id)])),KEY='surgiquiz_private_progress_v2';let bank=null,questions=[],session=[],idx=0,selected=null,score=0,checked=false,sessionWrong=[],progress=loadProgress();const esc=(v='')=>String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])),shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a},ready=q=>Number.isInteger(q.correctIndex)&&Array.isArray(q.options)&&q.correctIndex>=0&&q.options.length>q.correctIndex,complex=q=>q.status==='ready_complex_source'||q.contentType==='matching',anomaly=q=>q.status==='source_answer_missing'||q.status==='source_answer_invalid_label',state=id=>progress.questions[id]||{attempts:0,correct:0,wrong:0,favorite:false,mistake:false};function loadProgress(){try{const x=JSON.parse(localStorage.getItem(KEY)||'{}');return{questions:x.questions||{},totals:x.totals||{attempts:0,correct:0,wrong:0}}}catch{return{questions:{},totals:{attempts:0,correct:0,wrong:0}}}}function save(){localStorage.setItem(KEY,JSON.stringify(progress))}function mutate(id,fn){const s={...state(id)};fn(s);progress.questions[id]=s;save();stats()}async function readFile(file){const buf=await file.arrayBuffer();let text;if(file.name.endsWith('.gz')){if(!('DecompressionStream'in window))throw new Error('This browser cannot open .gz directly. Use the JSON file instead.');text=await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text()}else text=new TextDecoder().decode(buf);return JSON.parse(text)}function status(msg,kind='ok'){e.loadStatus.textContent=msg;e.loadStatus.className=`notice ${kind}`}function load(data,name){if(!data||!Array.isArray(data.questions))throw new Error('Invalid bank: expected a questions array.');bank=data;questions=data.questions;e.sTotal.textContent=questions.length.toLocaleString();e.sReady.textContent=questions.filter(ready).length.toLocaleString();books();chapters();integrity();stats();eligible();e.bankArea.classList.remove('hidden');e.quiz.classList.add('hidden');e.result.classList.add('hidden');status(`Loaded ${questions.length.toLocaleString()} questions from ${name}.`)}function books(){const xs=[...new Set(questions.map(q=>q.sourceBook).filter(Boolean))].sort();e.book.innerHTML='<option value="">All books</option>'+xs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('')}function chapters(){const b=e.book.value,xs=[...new Set(questions.filter(q=>!b||q.sourceBook===b).map(q=>q.chapter).filter(Boolean))].sort();e.chapter.innerHTML='<option value="">All chapters</option>'+xs.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');eligible()}function filtered(){const b=e.book.value,c=e.chapter.value,t=e.search.value.trim().toLowerCase();return questions.filter(q=>(!b||q.sourceBook===b)&&(!c||q.chapter===c)&&(!t||`${q.stem||''} ${q.chapter||''} ${q.sourceBook||''} ${q.sourceQuestionNumber||''}`.toLowerCase().includes(t)))}function pool(mode=e.mode.value){return filtered().filter(q=>{if(!ready(q))return false;const s=state(q.id);return mode==='unseen'?!s.attempts:mode==='mistakes'?!!s.mistake:mode==='favorites'?!!s.favorite:true})}function eligible(){if(!bank)return;const n=pool().length,f=filtered().length;e.eligible.textContent=`${n.toLocaleString()} scored-ready questions match this study mode; ${f.toLocaleString()} source questions match the text/book/chapter filters.`;e.start.disabled=!n}function stats(){if(!bank)return;const ss=questions.map(q=>state(q.id)),fav=ss.filter(s=>s.favorite).length,mist=ss.filter(s=>s.mistake).length,attempted=ss.filter(s=>s.attempts>0).length,unseen=questions.filter(q=>ready(q)&&!state(q.id).attempts).length,att=progress.totals.attempts||0;e.sFav.textContent=fav.toLocaleString();e.sMistakes.textContent=mist.toLocaleString();e.sAttempted.textContent=attempted.toLocaleString();e.sCorrect.textContent=(progress.totals.correct||0).toLocaleString();e.sWrong.textContent=(progress.totals.wrong||0).toLocaleString();e.sUnseen.textContent=unseen.toLocaleString();e.sAccuracy.textContent=att?`${Math.round((progress.totals.correct||0)/att*100)}%`:'0%';e.mistakeSession.disabled=!mist;e.favoriteSession.disabled=!fav;eligible()}function integrity(){const a=questions.filter(anomaly),cx=questions.filter(complex),g=Array.isArray(bank.sourceNumberingGaps)?bank.sourceNumberingGaps.length:(bank.sourceGapCount||0);e.integrity.textContent=`Bank contains ${questions.length.toLocaleString()} questions. ${questions.filter(ready).length.toLocaleString()} have explicit usable single answers, ${cx.length.toLocaleString()} are complex-format, ${a.length.toLocaleString()} preserve missing/invalid source answers, and ${g.toLocaleString()} source numbering gaps are recorded separately.`;e.anomalies.innerHTML=a.map(q=>`<div class="notice warn"><b>${esc(q.sourceBook)} · ${esc(q.chapter)} · Q${esc(q.sourceQuestionNumber)}</b><div class="meta">PDF page ${esc(q.sourcePdfPage)} · ${esc(q.status)}</div><div>${esc(q.reviewNotes||'No normalized answer assigned.')}</div></div>`).join('')||'<div class="notice ok">No source-answer anomalies.</div>'}function browse(){const all=filtered(),xs=all.slice(0,250);e.browser.classList.remove('hidden');e.browserMeta.textContent=`Showing ${xs.length.toLocaleString()} of ${all.length.toLocaleString()} filtered questions (first 250).`;e.browserList.innerHTML=xs.length?xs.map(q=>{const s=state(q.id);return`<div class="browser-item"><div class="meta">${esc(q.sourceBook)} · ${esc(q.chapter)} · Q${esc(q.sourceQuestionNumber)} · PDF p.${esc(q.sourcePdfPage)}</div><div class="stem">${esc(q.stem||'(Stem unavailable)')}</div><div class="row"><span class="pill">${esc(q.status||'unknown')}</span>${s.attempts?`<span class="pill">Attempts ${s.attempts}</span>`:'<span class="pill">Unseen</span>'}${s.mistake?'<span class="pill">Mistake queue</span>':''}</div><div class="actions"><button class="btn browseFav" data-id="${esc(q.id)}">${s.favorite?'★ Remove favorite':'☆ Favorite'}</button>${ready(q)?`<button class="btn browseOne" data-id="${esc(q.id)}">Study this question</button>`:''}</div></div>`}).join(''):'<div class="empty">No questions match these filters.</div>';e.browserList.querySelectorAll('.browseFav').forEach(b=>b.addEventListener('click',()=>{mutate(b.dataset.id,s=>s.favorite=!s.favorite);browse()}));e.browserList.querySelectorAll('.browseOne').forEach(b=>b.addEventListener('click',()=>{const q=questions.find(x=>x.id===b.dataset.id);if(q){session=[q];idx=score=0;sessionWrong=[];prepared()}}))}function start(mode=e.mode.value){const p=shuffle(pool(mode)),raw=e.size.value,n=raw==='all'?p.length:Math.min(Number(raw),p.length);session=p.slice(0,n);idx=score=0;sessionWrong=[];prepared()}function prepared(){if(!session.length)return;selected=null;checked=false;e.bankArea.classList.add('hidden');e.browser.classList.add('hidden');e.result.classList.add('hidden');e.quiz.classList.remove('hidden');render()}function current(){return session[idx]}function render(){const q=current();if(!q)return finish();selected=null;checked=false;e.submit.disabled=true;e.submit.classList.remove('hidden');e.next.classList.add('hidden');e.removeMistake.classList.add('hidden');e.feedback.className='hidden';e.bar.style.width=`${Math.round(idx/session.length*100)}%`;e.qCounter.textContent=`Question ${idx+1} of ${session.length}`;e.qMeta.innerHTML=`${esc(q.sourceBook)} · ${esc(q.chapter)} · Source Q${esc(q.sourceQuestionNumber)} · PDF p.${esc(q.sourcePdfPage)}<br>${esc(q.status)}`;e.qStem.textContent=q.stem||'(Stem unavailable)';e.qOptions.innerHTML=q.options.map((o,i)=>`<label class="option"><input type="radio" name="answer" value="${i}"><span><b>${String.fromCharCode(65+i)}.</b> ${esc(o)}</span></label>`).join('');e.qOptions.querySelectorAll('input').forEach(x=>x.addEventListener('change',ev=>{selected=Number(ev.target.value);e.submit.disabled=false}));favButton()}function favButton(){const q=current();if(!q)return;const f=state(q.id).favorite;e.favorite.innerHTML=`<span class="star">${f?'★':'☆'}</span> ${f?'Favorited':'Favorite'}`;e.favorite.classList.toggle('active',f)}function check(){if(selected===null||checked)return;checked=true;const q=current(),ok=selected===q.correctIndex;if(ok)score++;else sessionWrong.push(q.id);mutate(q.id,s=>{s.attempts=(s.attempts||0)+1;if(ok)s.correct=(s.correct||0)+1;else{s.wrong=(s.wrong||0)+1;s.mistake=true}});progress.totals.attempts=(progress.totals.attempts||0)+1;progress.totals.correct=(progress.totals.correct||0)+(ok?1:0);progress.totals.wrong=(progress.totals.wrong||0)+(ok?0:1);save();stats();e.qOptions.querySelectorAll('.option').forEach((el,i)=>{if(i===q.correctIndex)el.classList.add('correct');else if(i===selected)el.classList.add('wrong');el.querySelector('input').disabled=true});e.feedback.className=`explanation ${ok?'ok':'warn'}`;e.feedback.innerHTML=`<b>${ok?'Correct':'Incorrect'}.</b> Source answer: ${String.fromCharCode(65+q.correctIndex)}.<br><br>${esc(q.explanation||'No detailed explanation is available in the parsed source bank for this item.')}`;e.submit.classList.add('hidden');e.next.classList.remove('hidden');e.next.textContent=idx===session.length-1?'Finish':'Next';if(state(q.id).mistake)e.removeMistake.classList.remove('hidden')}function next(){idx++;idx>=session.length?finish():render()}function finish(){e.quiz.classList.add('hidden');e.result.classList.remove('hidden');const total=session.length,pct=total?Math.round(score/total*100):0;e.rScore.textContent=score;e.rTotal.textContent=total;e.rPct.textContent=`${pct}%`;e.rWrong.textContent=total-score;e.reviewWrong.disabled=!sessionWrong.length}function home(){e.result.classList.add('hidden');e.quiz.classList.add('hidden');e.bankArea.classList.remove('hidden');stats()}function fromIds(ids){const s=new Set(ids);session=questions.filter(q=>s.has(q.id)&&ready(q));idx=score=0;sessionWrong=[];prepared()}function reset(){if(!confirm('Reset all SurgiQuiz Private Study favorites, mistakes, and attempt history stored in this browser?'))return;localStorage.removeItem(KEY);progress=loadProgress();stats();if(bank&&!e.browser.classList.contains('hidden'))browse()}e.file.addEventListener('change',async ev=>{const f=ev.target.files?.[0];if(!f)return;try{status('Reading bank…');load(await readFile(f),f.name)}catch(err){status(err instanceof Error?err.message:String(err),'error')}});e.clear.addEventListener('click',()=>{bank=null;questions=session=[];e.file.value='';['bankArea','browser','quiz','result'].forEach(id=>e[id].classList.add('hidden'));e.loadStatus.className='notice hidden'});e.book.addEventListener('change',chapters);e.chapter.addEventListener('change',eligible);e.search.addEventListener('input',eligible);e.mode.addEventListener('change',eligible);e.start.addEventListener('click',()=>start());e.browseBtn.addEventListener('click',browse);e.closeBrowser.addEventListener('click',()=>e.browser.classList.add('hidden'));e.mistakeSession.addEventListener('click',()=>start('mistakes'));e.favoriteSession.addEventListener('click',()=>start('favorites'));e.submit.addEventListener('click',check);e.next.addEventListener('click',next);e.favorite.addEventListener('click',()=>{const q=current();if(q){mutate(q.id,s=>s.favorite=!s.favorite);favButton()}});e.removeMistake.addEventListener('click',()=>{const q=current();if(q){mutate(q.id,s=>s.mistake=false);e.removeMistake.classList.add('hidden')}});e.quit.addEventListener('click',home);e.again.addEventListener('click',home);e.reviewWrong.addEventListener('click',()=>fromIds(sessionWrong));e.resetProgress.addEventListener('click',reset)})();
 </script>
 </body>
 </html>
