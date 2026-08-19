@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://surgiquiz.netlify.app/sitemap.xml
