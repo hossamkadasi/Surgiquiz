@@ -1,3 +1,4 @@
+// Production question service; redeployed after restoring Supabase environment variables.
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 export default async (req: Request) => {
   if (req.method !== 'GET' && req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
