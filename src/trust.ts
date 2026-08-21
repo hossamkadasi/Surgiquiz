@@ -5,6 +5,8 @@ export type PublishedLearning={id:string;correct_index:number;en_explanation:str
 export type ReviewerStatus={authorized:boolean;role:string|null;active:boolean};
 export type ReviewerQueueItem={id:string;queue_index:number;category:string|null;topic:string|null;difficulty:string|null;evidence_status:string;review_tier:string;status:string;version:number;medical_reviewed_at:string|null;open_reports:number};
 export type ReviewerQuestion={question:any;options:any[];references:any[];reviews:any[];reports:any[];versions:any[]};
+export type ReviewerTeamMember={user_id:string;email:string|null;role:'reviewer'|'lead_reviewer'|'admin';active:boolean;created_at:string;updated_at:string};
+export type ReviewerInvite={token:string;role:'reviewer'|'lead_reviewer'|'admin';expires_at:string};
 
 async function service(body:Record<string,unknown>){
   const r=await fetch('/.netlify/functions/questions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
@@ -25,6 +27,10 @@ export async function claimInitialContentAdmin(token:string){
   const user=await currentUser(); if(!user)throw new Error('Sign in before claiming reviewer administration.');
   const {data,error}=await supabase.rpc('claim_initial_content_admin',{p_token:token}); if(error)throw error; return data as {claimed:boolean;role:string};
 }
+export async function claimReviewerInvite(token:string){
+  const user=await currentUser(); if(!user)throw new Error('Sign in before claiming a reviewer invitation.');
+  const {data,error}=await supabase.rpc('claim_content_reviewer_invite',{p_token:token}); if(error)throw error; return data as {authorized:boolean;role:string};
+}
 export async function reviewerStatus():Promise<ReviewerStatus>{
   const {data,error}=await supabase.rpc('get_content_reviewer_status'); if(error)throw error; return data as ReviewerStatus;
 }
@@ -42,4 +48,25 @@ export async function publishQuestion(questionId:string,notes:string){
 }
 export async function resolveReport(reportId:string,status:'triaged'|'resolved'|'dismissed',notes:string){
   const {data,error}=await supabase.rpc('resolve_content_question_report',{p_report_id:reportId,p_status:status,p_notes:notes||null}); if(error)throw error; return data;
+}
+
+export async function listReviewerTeam():Promise<ReviewerTeamMember[]>{
+  const {data,error}=await supabase.rpc('list_content_reviewer_team'); if(error)throw error; return (data??[]) as ReviewerTeamMember[];
+}
+export async function setReviewerByEmail(email:string,role:'reviewer'|'lead_reviewer'|'admin',active=true){
+  const {data,error}=await supabase.rpc('set_content_reviewer_by_email',{p_email:email,p_role:role,p_active:active}); if(error)throw error; return data;
+}
+export async function createReviewerInvite(role:'reviewer'|'lead_reviewer'|'admin',days=7):Promise<ReviewerInvite>{
+  const {data,error}=await supabase.rpc('create_content_reviewer_invite',{p_role:role,p_days:days}); if(error)throw error; return data as ReviewerInvite;
+}
+export async function correctQuarantinedQuestion(questionId:string,correctIndex:number,enExplanation:string,enLearningPoint:string,notes:string,evidenceSnapshot:unknown){
+  const {data,error}=await supabase.rpc('correct_quarantined_content_question',{
+    p_question_id:questionId,
+    p_correct_index:correctIndex,
+    p_en_explanation:enExplanation,
+    p_en_learning_point:enLearningPoint,
+    p_notes:notes||null,
+    p_evidence_snapshot:evidenceSnapshot
+  });
+  if(error)throw error; return data;
 }
