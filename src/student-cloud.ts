@@ -8,6 +8,8 @@ export const supabase = createClient(
 export type ExamTrack = 'arab_board'|'yemeni_board'|'professional_masters'|'general_surgery';
 export type StudentProfile = {user_id:string;display_name:string|null;exam_track:ExamTrack;locale:string;created_at:string;updated_at:string};
 export type StudentDashboard = {attempted:number;correct:number;incorrect:number;bookmarked:number;accuracy:number;recent:Array<{question_id:string;last_correct:boolean|null;bookmarked:boolean;updated_at:string}>};
+export type WeaknessRow = {category:string;attempted:number;correct:number;incorrect:number;accuracy:number;weakness_score:number};
+export type RevisionQuestion = {id:string;queue_index:number;category:string;topic:string|null;difficulty:string|null;en_stem:string;ar_stem:string|null;options:Array<{index:number;en:string;ar:string|null}>;reason:string;priority:number};
 
 export async function currentUser(): Promise<User|null> {
   const { data } = await supabase.auth.getUser();
@@ -58,15 +60,25 @@ export async function getCloudDashboard():Promise<StudentDashboard|null> {
   const {data,error}=await supabase.rpc('get_student_dashboard'); if(error)throw error; return data as StudentDashboard;
 }
 
+export async function getWeaknessMap():Promise<WeaknessRow[]> {
+  const user=await currentUser(); if(!user)return [];
+  const {data,error}=await supabase.rpc('get_student_weakness_map'); if(error)throw error; return (data??[]) as WeaknessRow[];
+}
+
+export async function getRevisionQueue(limit=20):Promise<RevisionQuestion[]> {
+  const user=await currentUser(); if(!user)return [];
+  const {data,error}=await supabase.rpc('get_student_revision_queue',{p_limit:limit}); if(error)throw error; return (data??[]) as RevisionQuestion[];
+}
+
 export async function getCloudProgress() {
   const user=await currentUser(); if(!user)return [];
   const {data,error}=await supabase.from('student_question_progress').select('question_id,attempts,correct_attempts,last_answer_index,last_correct,bookmarked,updated_at').order('updated_at',{ascending:false});
   if(error)throw error; return data ?? [];
 }
 
-export async function migrateLocalProgress(progress:Record<string,{selected?:number;correct?:boolean}>,bookmarks:string[]) {
+export async function migrateLocalProgress(progress:Record<string,{selected?:number;chosen?:number;correct?:boolean;bookmarked?:boolean}>,bookmarks:string[]) {
   const user=await currentUser(); if(!user)return {migrated:0};
   const ids=new Set([...Object.keys(progress),...bookmarks]); let migrated=0;
-  for(const id of ids){const p=progress[id]; await saveCloudProgress(id,p?.selected ?? null,p?.correct ?? null,bookmarks.includes(id)); migrated++;}
+  for(const id of ids){const p=progress[id]; await saveCloudProgress(id,p?.selected ?? p?.chosen ?? null,p?.correct ?? null,p?.bookmarked ?? bookmarks.includes(id)); migrated++;}
   return {migrated};
 }
