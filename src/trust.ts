@@ -21,6 +21,10 @@ export async function reportQuestion(questionId:string,reportType:string,notes:s
   if(error)throw error; return data as string;
 }
 
+export async function claimInitialContentAdmin(token:string){
+  const user=await currentUser(); if(!user)throw new Error('Sign in before claiming reviewer administration.');
+  const {data,error}=await supabase.rpc('claim_initial_content_admin',{p_token:token}); if(error)throw error; return data as {claimed:boolean;role:string};
+}
 export async function reviewerStatus():Promise<ReviewerStatus>{
   const {data,error}=await supabase.rpc('get_content_reviewer_status'); if(error)throw error; return data as ReviewerStatus;
 }
