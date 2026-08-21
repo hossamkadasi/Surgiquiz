@@ -1,0 +1,39 @@
+name: Deploy SurgiQuiz to Netlify
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-netlify.yml'
+      - 'src/**'
+      - 'netlify/**'
+      - 'public/**'
+      - '*.html'
+      - 'vite.config.ts'
+      - 'netlify.toml'
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: 1c161110-9a75-4bb6-aec9-d50e7c022bc1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify Netlify credentials
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ]; then
+            echo "::error::NETLIFY_AUTH_TOKEN GitHub Secret is missing"
+            exit 1
+          fi
+      - run: npm install
+      - run: node scripts/validate-learning-bridge.mjs
+      - run: npm run build
+      - name: Deploy production
+        run: npx -y netlify-cli@27.1.2 deploy --prod --dir=dist --site="$NETLIFY_SITE_ID" --auth="$NETLIFY_AUTH_TOKEN" --message="SurgiQuiz production $GITHUB_SHA"
