@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 
+// Multi-page production build for the core app, beta bank, student cloud, and adaptive revision.
 export default defineConfig({
   build: {
     rollupOptions: {
