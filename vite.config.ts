@@ -8,6 +8,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         betaBank: resolve(__dirname, 'beta-bank.html'),
         student: resolve(__dirname, 'student.html'),
+        revision: resolve(__dirname, 'revision.html'),
       },
     },
   },
