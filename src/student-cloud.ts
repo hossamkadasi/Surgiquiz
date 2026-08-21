@@ -1,12 +1,13 @@
 import { createClient, type User } from '@supabase/supabase-js';
 
-const supabase = createClient(
+export const supabase = createClient(
   'https://lltdfvyommeacveqqfec.supabase.co',
   'sb_publishable_sRjoyXVHljdZ4-ACiiA8TA_oywvpopW'
 );
 
 export type ExamTrack = 'arab_board'|'yemeni_board'|'professional_masters'|'general_surgery';
-export type StudentDashboard = {attempted:number;correct:number;incorrect:number;bookmarked:number;accuracy:number;recent:unknown[]};
+export type StudentProfile = {user_id:string;display_name:string|null;exam_track:ExamTrack;locale:string;created_at:string;updated_at:string};
+export type StudentDashboard = {attempted:number;correct:number;incorrect:number;bookmarked:number;accuracy:number;recent:Array<{question_id:string;last_correct:boolean|null;bookmarked:boolean;updated_at:string}>};
 
 export async function currentUser(): Promise<User|null> {
   const { data } = await supabase.auth.getUser();
@@ -18,22 +19,33 @@ export function onAuthChange(cb:(user:User|null)=>void) {
 }
 
 export async function sendMagicLink(email:string) {
-  const redirect = `${window.location.origin}/beta-bank.html`;
+  const redirect = `${window.location.origin}/student.html`;
   const { error } = await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:redirect}});
   if (error) throw error;
 }
 
 export async function signOut() { const {error}=await supabase.auth.signOut(); if(error)throw error; }
 
+export async function getStudentProfile():Promise<StudentProfile|null>{
+  const user=await currentUser(); if(!user)return null;
+  const {data,error}=await supabase.from('student_profiles').select('*').eq('user_id',user.id).maybeSingle();
+  if(error)throw error; return data as StudentProfile|null;
+}
+
 export async function ensureProfile(track:ExamTrack='general_surgery') {
   const user=await currentUser(); if(!user) return null;
-  const {data,error}=await supabase.from('student_profiles').upsert({user_id:user.id,exam_track:track},{onConflict:'user_id'}).select().single();
-  if(error) throw error; return data;
+  const existing=await getStudentProfile(); if(existing)return existing;
+  const {data,error}=await supabase.from('student_profiles').insert({user_id:user.id,exam_track:track}).select().single();
+  if(error) throw error; return data as StudentProfile;
 }
 
 export async function setExamTrack(track:ExamTrack) {
   const user=await currentUser(); if(!user) throw new Error('authentication_required');
-  const {error}=await supabase.from('student_profiles').upsert({user_id:user.id,exam_track:track},{onConflict:'user_id'}); if(error)throw error;
+  const existing=await getStudentProfile();
+  const query=existing
+    ? supabase.from('student_profiles').update({exam_track:track}).eq('user_id',user.id)
+    : supabase.from('student_profiles').insert({user_id:user.id,exam_track:track});
+  const {error}=await query; if(error)throw error;
 }
 
 export async function saveCloudProgress(questionId:string, answerIndex:number|null, correct:boolean|null, bookmarked:boolean|null) {
