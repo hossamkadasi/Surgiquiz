@@ -1,13 +1,21 @@
 import { currentUser } from './student-cloud';
-import { publishQuestion, resolveReport, reviewQuestion, reviewerQuestion, reviewerQueue, reviewerStatus, type ReviewerQuestion, type ReviewerQueueItem } from './trust';
+import { claimInitialContentAdmin, publishQuestion, resolveReport, reviewQuestion, reviewerQuestion, reviewerQueue, reviewerStatus, type ReviewerQuestion, type ReviewerQueueItem } from './trust';
 
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
-const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]!));
+const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 let role:string|null=null; let selectedId:string|null=null; let items:ReviewerQueueItem[]=[];
 
 function refText(ref:any){if(typeof ref==='string')return ref;const parts=[ref?.title,ref?.book,ref?.guideline,ref?.edition&&`Edition ${ref.edition}`,ref?.chapter&&`Chapter ${ref.chapter}`,ref?.year,ref?.url].filter(Boolean);return parts.length?parts.join(' · '):JSON.stringify(ref);}
 
-async function init(){const user=await currentUser();if(!user){$('gateMsg').textContent='Sign in through My Progress, then return with a reviewer-authorized account.';return;}try{const s=await reviewerStatus();if(!s.authorized){$('gateMsg').textContent='This signed-in account is not assigned to the SurgiQuiz medical review team.';return;}role=s.role;$('role').textContent=`Reviewer · ${String(role).replaceAll('_',' ')}`;$('gate').classList.add('hidden');$('workspace').classList.remove('hidden');await loadQueue();}catch(e:any){$('gateMsg').textContent=e.message||'Unable to validate reviewer access.';}}
+async function init(){
+ const user=await currentUser();
+ if(!user){$('gateMsg').textContent='Sign in through My Progress, then return with a reviewer-authorized account.';$('claimBox').classList.add('hidden');return;}
+ try{
+  const s=await reviewerStatus();
+  if(!s.authorized){$('gateMsg').textContent='This signed-in account is not assigned to the SurgiQuiz medical review team. If you are the initial owner, use the one-time administrator claim below.';$('claimBox').classList.remove('hidden');return;}
+  role=s.role;$('role').textContent=`Reviewer · ${String(role).replaceAll('_',' ')}`;$('gate').classList.add('hidden');$('workspace').classList.remove('hidden');await loadQueue();
+ }catch(e:any){$('gateMsg').textContent=e.message||'Unable to validate reviewer access.';}
+}
 
 async function loadQueue(){const status=($<HTMLSelectElement>('statusFilter')).value||null;const tier=($<HTMLSelectElement>('tierFilter')).value||null;const box=$('queue');box.textContent='Loading review queue…';try{items=await reviewerQueue(60,status,tier);renderQueue();if(selectedId&&!items.some(x=>x.id===selectedId)){selectedId=null;$('detail').innerHTML='<div class="muted">Select a question from the queue.</div>';}}catch(e:any){box.textContent=e.message||'Unable to load review queue.';}}
 
@@ -22,4 +30,5 @@ function evidencePayload(required:boolean){const raw=($<HTMLTextAreaElement>('ev
 
 function bindDetail(q:any,needsEvidence:boolean){const decide=async(decision:'approve'|'needs_changes'|'reject')=>{const msg=$('decisionMsg');msg.textContent='Saving review decision…';try{const notes=($<HTMLTextAreaElement>('reviewNotes')).value.trim();const evidence=decision==='approve'?evidencePayload(needsEvidence):null;await reviewQuestion(q.id,decision,notes,evidence);msg.textContent='Review decision saved. Publishing remains a separate step.';await loadQueue();await openQuestion(q.id);}catch(e:any){msg.textContent=e.message||'Unable to save review.';}};const a=document.getElementById('approve');if(a)a.onclick=()=>decide('approve');$('changes').onclick=()=>decide('needs_changes');$('reject').onclick=()=>decide('reject');const p=document.getElementById('publish');if(p)p.onclick=async()=>{const msg=$('decisionMsg');if(!confirm('Publish this medically verified question to the public Verified QBank?'))return;msg.textContent='Publishing…';try{await publishQuestion(q.id,($<HTMLTextAreaElement>('reviewNotes')).value.trim());msg.textContent='Published to Verified QBank.';await loadQueue();await openQuestion(q.id);}catch(e:any){msg.textContent=e.message||'Unable to publish.';}};document.querySelectorAll<HTMLButtonElement>('[data-report]').forEach(b=>b.onclick=async()=>{const notes=prompt('Resolution / triage notes (optional):')||'';try{await resolveReport(b.dataset.report!,b.dataset.reportStatus as any,notes);await openQuestion(q.id);}catch(e:any){alert(e.message||'Unable to update report.');}});}
 
+$('claimAdmin').onclick=async()=>{const msg=$('claimMsg');const token=($<HTMLInputElement>('claimToken')).value.trim();if(!token){msg.textContent='Enter the one-time claim code.';return;}msg.textContent='Claiming content administrator role…';try{await claimInitialContentAdmin(token);msg.textContent='Content administrator role activated.';($<HTMLInputElement>('claimToken')).value='';await init();}catch(e:any){msg.textContent=e.message||'Unable to claim administrator role.';}};
 $('reload').onclick=loadQueue;$('statusFilter').onchange=loadQueue;$('tierFilter').onchange=loadQueue;init();
