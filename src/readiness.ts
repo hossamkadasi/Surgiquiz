@@ -3,7 +3,10 @@ import { supabase } from './student-cloud';
 export type ReadinessData = {
   score:number;
   band:string;
+  confidence:number;
+  confidence_band:string;
   attempted:number;
+  domains_sampled:number;
   components:{
     question_accuracy:number;
     domain_mastery:number;
@@ -17,6 +20,9 @@ export type ReadinessData = {
     domain_mastery_weight:number;
     mock_exam_weight:number;
     coverage_weight:number;
+    confidence_uses_question_volume:boolean;
+    confidence_uses_domain_sampling:boolean;
+    confidence_uses_mock_exam_count:boolean;
     is_official_board_prediction:boolean;
   };
 };
