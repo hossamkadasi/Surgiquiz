@@ -1,0 +1,62 @@
+import { currentUser } from './student-cloud';
+import { publishQuestion, resolveReport, reviewQuestion, reviewerQuestion, reviewerQueue, reviewerStatus, type ReviewerQuestion, type ReviewerQueueItem } from './trust';
+
+const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
+const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+let role:string|null=null; let selectedId:string|null=null; let items:ReviewerQueueItem[]=[];
+
+function refText(ref:any){
+  if(typeof ref==='string')return ref;
+  const parts=[ref?.title,ref?.book,ref?.guideline,ref?.edition&&`Edition ${ref.edition}`,ref?.chapter&&`Chapter ${ref.chapter}`,ref?.year].filter(Boolean);
+  return parts.length?parts.join(' · '):JSON.stringify(ref);
+}
+
+async function init(){
+  const user=await currentUser();
+  if(!user){$('gateMsg').textContent='Sign in through My Progress, then return with a reviewer-authorized account.';return;}
+  try{
+    const s=await reviewerStatus();
+    if(!s.authorized){$('gateMsg').textContent='This signed-in account is not assigned to the SurgiQuiz medical review team.';return;}
+    role=s.role;$('role').textContent=`Reviewer · ${String(role).replaceAll('_',' ')}`;$('gate').classList.add('hidden');$('workspace').classList.remove('hidden');await loadQueue();
+  }catch(e:any){$('gateMsg').textContent=e.message||'Unable to validate reviewer access.';}
+}
+
+async function loadQueue(){
+  const status=($<HTMLSelectElement>('statusFilter')).value||null;
+  const tier=($<HTMLSelectElement>('tierFilter')).value||null;
+  const box=$('queue');box.textContent='Loading review queue…';
+  try{items=await reviewerQueue(60,status,tier);renderQueue();if(selectedId&&!items.some(x=>x.id===selectedId)){selectedId=null;$('detail').innerHTML='<div class="muted">Select a question from the queue.</div>';}}
+  catch(e:any){box.textContent=e.message||'Unable to load review queue.';}
+}
+
+function renderQueue(){
+  const box=$('queue');
+  box.innerHTML=items.length?items.map(x=>`<div class="qitem ${selectedId===x.id?'active':''}" data-id="${esc(x.id)}"><div class="qhead"><b>#${x.queue_index}</b><span class="badge">${esc(x.status)}</span></div><div>${esc(x.category||'General Surgery')}</div><div class="muted">${esc(x.topic||'')} · ${esc(x.review_tier)}${x.open_reports?` · ${x.open_reports} open report${x.open_reports===1?'':'s'}`:''}</div></div>`).join(''):'<div class="muted">No questions match the current filters.</div>';
+  box.querySelectorAll<HTMLElement>('[data-id]').forEach(el=>el.onclick=()=>openQuestion(el.dataset.id!));
+}
+
+async function openQuestion(id:string){selectedId=id;renderQueue();const box=$('detail');box.textContent='Loading question…';
+  try{const d=await reviewerQuestion(id);renderDetail(d);}catch(e:any){box.textContent=e.message||'Unable to load question.';}
+}
+
+function renderDetail(d:ReviewerQuestion){
+  const q=d.question; const anomaly=q.review_tier==='quarantine_source_answer_anomaly'; const needsEvidence=q.review_tier==='evidence_review_required';
+  const reports=(d.reports||[]).map((r:any)=>`<div class="report"><div class="qhead"><b>${esc(r.type)}</b><span class="badge">${esc(r.status)}</span></div><div>${esc(r.notes||'No notes')}</div><div class="muted">${new Date(r.created_at).toLocaleString()}</div>${r.status==='open'||r.status==='triaged'?`<div class="actions" style="margin-top:8px"><button data-report="${esc(r.id)}" data-report-status="triaged">Triage</button><button data-report="${esc(r.id)}" data-report-status="resolved" class="primary">Resolve</button><button data-report="${esc(r.id)}" data-report-status="dismissed">Dismiss</button></div>`:''}</div>`).join('')||'<div class="muted">No learner reports.</div>';
+  const refs=(d.references||[]).map((r:any,i:number)=>`<div class="ref"><b>${i+1}.</b> ${esc(refText(r))}</div>`).join('')||'<div class="muted">No references attached.</div>';
+  const history=(d.reviews||[]).map((r:any)=>`<div class="history"><b>${esc(r.decision)}</b> · ${esc(r.review_type)}<div>${esc(r.notes||'')}</div><div class="muted">${new Date(r.created_at).toLocaleString()}</div></div>`).join('')||'<div class="muted">No prior review decisions.</div>';
+  const versions=(d.versions||[]).map((v:any)=>`<span class="badge">v${v.version} · ${esc(v.reason||'snapshot')}</span>`).join(' ')||'<span class="muted">No version snapshots yet.</span>';
+  $('detail').innerHTML=`<div class="qhead"><div><span class="badge">#${q.queue_index}</span> <span class="badge">${esc(q.category)}</span> <span class="badge">${esc(q.evidence_status)}</span></div><div><span class="badge">${esc(q.review_tier)}</span> <span class="badge">v${q.content_version}</span></div></div>${anomaly?'<section class="card notice"><b>Quarantined source-answer anomaly</b><p class="muted">This item cannot be approved or published until its answer/content is manually corrected through an evidence-based correction workflow.</p></section>':''}<h2 class="stem">${esc(q.en_stem)}</h2>${q.ar_stem?`<p dir="rtl">${esc(q.ar_stem)}</p>`:''}<section class="panel"><h3>Options & rationales</h3><div class="options">${(d.options||[]).map((o:any)=>`<div class="option ${o.index===q.correct_index?'correct':''}"><b>${String.fromCharCode(65+Number(o.index))}. ${esc(o.en)}</b>${o.ar?`<div dir="rtl">${esc(o.ar)}</div>`:''}<div class="muted" style="margin-top:7px">${o.index===q.correct_index?'Current keyed answer · ':''}${esc(o.en_rationale||'No rationale')}</div></div>`).join('')}</div></section><section class="panel"><h3>Explanation</h3><p>${esc(q.en_explanation||'No explanation')}</p><h3>Learning point</h3><p>${esc(q.en_learning_point||'No learning point')}</p></section><section class="panel"><h3>References</h3>${refs}</section><section class="panel"><h3>Learner reports</h3>${reports}</section><section class="panel"><h3>Review history</h3>${history}<div style="margin-top:8px">${versions}</div></section><section class="panel decision"><h3>Medical review decision</h3><textarea id="reviewNotes" placeholder="Reviewer notes, corrections needed, or medical rationale…"></textarea>${needsEvidence?'<textarea id="evidenceNotes" placeholder="Required for approval: current evidence reviewed, guideline/book details, year/edition and verification notes…"></textarea>':'<textarea id="evidenceNotes" placeholder="Optional evidence-review notes…"></textarea>'}<div class="actions">${!anomaly?'<button id="approve" class="primary">Approve as medically verified</button>':''}<button id="changes" class="warn">Needs changes</button><button id="reject" class="danger">Reject</button>${q.status==='verified'&&(role==='lead_reviewer'||role==='admin')?'<button id="publish" class="secondary">Publish to Verified QBank</button>':''}</div><div id="decisionMsg" class="muted"></div></section>`;
+  bindDetail(q,needsEvidence);
+}
+
+function evidencePayload(required:boolean){const text=($<HTMLTextAreaElement>('evidenceNotes')).value.trim();if(required&&!text)throw new Error('Evidence-review notes are required before approval.');return text?{reviewed_at:new Date().toISOString(),reviewer_notes:text}:null;}
+
+function bindDetail(q:any,needsEvidence:boolean){
+  const decide=async(decision:'approve'|'needs_changes'|'reject')=>{const msg=$('decisionMsg');msg.textContent='Saving review decision…';try{const notes=($<HTMLTextAreaElement>('reviewNotes')).value.trim();const evidence=decision==='approve'?evidencePayload(needsEvidence):null;await reviewQuestion(q.id,decision,notes,evidence);msg.textContent='Review decision saved. Publishing remains a separate step.';await loadQueue();await openQuestion(q.id);}catch(e:any){msg.textContent=e.message||'Unable to save review.';}};
+  const a=document.getElementById('approve');if(a)a.onclick=()=>decide('approve');$('changes').onclick=()=>decide('needs_changes');$('reject').onclick=()=>decide('reject');
+  const p=document.getElementById('publish');if(p)p.onclick=async()=>{const msg=$('decisionMsg');if(!confirm('Publish this medically verified question to the public Verified QBank?'))return;msg.textContent='Publishing…';try{await publishQuestion(q.id,($<HTMLTextAreaElement>('reviewNotes')).value.trim());msg.textContent='Published to Verified QBank.';await loadQueue();await openQuestion(q.id);}catch(e:any){msg.textContent=e.message||'Unable to publish.';}};
+  document.querySelectorAll<HTMLButtonElement>('[data-report]').forEach(b=>b.onclick=async()=>{const notes=prompt('Resolution / triage notes (optional):')||'';try{await resolveReport(b.dataset.report!,b.dataset.reportStatus as any,notes);await openQuestion(q.id);}catch(e:any){alert(e.message||'Unable to update report.');}});
+}
+
+$('reload').onclick=loadQueue;$('statusFilter').onchange=loadQueue;$('tierFilter').onchange=loadQueue;
+init();
